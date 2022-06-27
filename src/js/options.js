@@ -1,6 +1,13 @@
 import browser from "webextension-polyfill";
 
+import axios from "axios";
+
+import 'bootstrap';
+
+import "bootstrap/dist/css/bootstrap.css";
 import "../css/options.css";
+
+const clickUp = axios.create();
 
 const reminderFrequencyMinDefault = 10;
 
@@ -11,18 +18,47 @@ const teamIdInputEl = document.getElementById("clickUpTeamIdInput"),
   messageEl = document.getElementById("message");
 
 const handleSave = (event) => {
-  const clickUpTeamId = teamIdInputEl.value,
-    clickUpApiKey = apiKeyInputEl.value,
-    reminderFrequency = reminderFrequencyInputEl.value * 60*1000;
 
-  browser.storage.local.set({ clickUpTeamId, clickUpApiKey, reminderFrequency })
+  const updateLocalStorage = async () => {
+    const clickUpTeamId = teamIdInputEl.value,
+      clickUpApiKey = apiKeyInputEl.value,
+      reminderFrequency = reminderFrequencyInputEl.value * 60*1000;
+
+    if ( !/^\d+$/.test(clickUpTeamId) ) throw new Error("team id must be numeric");
+    if ( !/\w{10,}$/.test(clickUpApiKey) ) throw new Error("api key too short or containing spaces");
+
+    clickUp.defaults.baseURL = `https://api.clickup.com/api/v2`
+    clickUp.defaults.headers.common['Authorization'] = clickUpApiKey;
+
+    await clickUp.get('/user')
+    .then((res) => {
+      const { user } = res.data;
+      if (!user?.id) throw new Error("couldn't identify ClickUp user with the provided credentials");
+      return user;
+    })
+    .then((user) => {
+      console.info(user);
+      return browser.storage.local.set({ user });
+    });
+
+    if ( !/^\d+$/.test(reminderFrequency) || reminderFrequency <= 0 ) throw new Error("reminder frequency must be a positive number");
+
+    await browser.storage.local.set({ clickUpTeamId, clickUpApiKey, reminderFrequency });
+
+    return true;
+  }
+
+  updateLocalStorage()
   .then(() => {
-    messageEl.textContent = 'Success';
+    messageEl.textContent = 'Success - Restarting extension in 1m to apply updates.';
     messageEl.classList.remove("error");
     messageEl.classList.add("success");
+
+    console.info("Restarting extension now.");
+    setTimeout(browser.runtime.reload, 1*60*1000);
   })
   .catch(error => {
-    messageEl.textContent = 'Error';
+    messageEl.textContent = 'Error: ' + error.message;
     messageEl.classList.remove("success");
     messageEl.classList.add("error");
   });
@@ -64,7 +100,7 @@ browser.storage.local.get(["clickUpTeamId", "clickUpApiKey", "reminderFrequency"
     messageEl.classList.add("error");
   });
 
-teamIdInputEl.addEventListener("change", handleInputChange);
-apiKeyInputEl.addEventListener("change", handleInputChange);
-reminderFrequencyInputEl.addEventListener("change", handleInputChange);
+teamIdInputEl.addEventListener("input", handleInputChange);
+apiKeyInputEl.addEventListener("input", handleInputChange);
+reminderFrequencyInputEl.addEventListener("input", handleInputChange);
 submitEl.addEventListener("click", handleSave);

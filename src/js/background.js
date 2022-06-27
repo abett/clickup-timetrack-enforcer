@@ -12,12 +12,17 @@ console.info("enforcing!");
 let timeLog = [];
 let reminderTabId;
 
-let counter = 1;
+let counter = 1,
+  openReminderInterval;
 
 const openReminder = async () => {
 
-  const { reminderActive } = await browser.storage.local.get("reminderActive");
+  const { reminderActive, clickUpTeamId, clickUpApiKey, user } = await browser.storage.local.get(["reminderActive", "clickUpTeamId", "clickUpApiKey", "user"]);
   if (reminderActive === false) return;
+  if (!clickUpTeamId || !clickUpApiKey || !user?.id) {
+    console.info("not opening a reminder, because crucial clickUp info is missing.");
+    return;
+  }
 
   const reminderTab = await browser.tabs.get( reminderTabId )
   .catch(() => {
@@ -31,7 +36,7 @@ const openReminder = async () => {
 
   browser.tabs.update(reminderTabId, { active: true })
   .then(() => {
-    console.info((new Date()).toLocaleString() + 'opened reminder #' + counter);
+    console.info((new Date()).toLocaleString() + ' - opened reminder #' + counter);
   })
   .catch(e => {
     console.warn(e);
@@ -49,6 +54,5 @@ browser.storage.local.get(["reminderFrequency", "reminderActive"])
 
   console.info("reminding every " + reminderFrequency/(60*1000) + "min");
 
-  let openReminderInterval;
   openReminderInterval = setInterval(openReminder, reminderFrequency);
 })

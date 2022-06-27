@@ -1,4 +1,19 @@
-body {
-  width: 100vw;
-  height: 100vh;
+.order-first .card {
+  border-width: 4px;
+  filter: opacity(1);
+}
+.order-1 .card {
+  border-width: 3px;
+  filter: opacity(0.5);
+}
+.order-2 .card {
+  border-width: 2px;
+  filter: opacity(0.4);
+}
+.order-3 .card {
+  border-width: 1px;
+  filter: opacity(0.3);
+}
+.order-last .card {
+  filter: opacity(0.2);
 }

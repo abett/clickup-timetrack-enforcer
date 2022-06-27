@@ -1,36 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
   <title>Options</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-  <h1>Options</h1>
+  <div class="container p-4">
 
-  <div>
-    <div>
-      <label>ClickUp Team ID</label>
-      <input id="clickUpTeamIdInput" name="clickUpTeamId" placeholder="input clickup team id" disabled />
-    </div>
+      <div class="card h-100">
+        <div class="card-header">ClickUp TimeTrack Enforcer</div>
+        <div class="card-body">
+          <h1>Options</h1>
 
-    <div>
-      <label>ClickUp API Key</label>
-      <input id="clickUpApiKeyInput" name="clickUpApiKey" placeholder="input clickup API key" disabled />
-    </div>
+          <div>
 
-    <div>
-      <label>Reminder Frequency (in minutes)</label>
-      <input id="reminderFrequencyMinInput" name="reminderFrequencyMin" />
-    </div>
+          <div class="mb-3">
+            <label for="clickUpTeamIdInput" class="form-label">ClickUp Team ID</label>
+            <input id="clickUpTeamIdInput" class="form-control" name="clickUpTeamId" placeholder="input clickup team id" disabled />
+          </div>
 
-    <div>
-      <input id="submitButton" type="submit" value="Save" disabled>
-    </div>
+          <div class="mb-3">
+            <label for="clickUpApiKeyInput" class="form-label">ClickUp API Key</label>
+            <input id="clickUpApiKeyInput" class="form-control" name="clickUpApiKey" placeholder="input clickup API key" disabled />
+          </div>
 
-    <div>
-      <p id="message"></p>
+          <div class="mb-3">
+            <label for="reminderFrequencyMinInput" class="form-label">Reminder Frequency (in minutes)</label>
+            <input id="reminderFrequencyMinInput" class="form-control" name="reminderFrequencyMin" />
+          </div>
+
+          <div>
+            <input id="submitButton" type="submit" value="Save" disabled>
+          </div>
+
+          <div>
+            <p id="message"></p>
+          </div>
+        </div>
+
+      </div>
     </div>
+    
   </div>
-
 </body>
 </html>

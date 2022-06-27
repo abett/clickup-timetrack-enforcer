@@ -1,19 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
   <title>Time Track Reminder</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-  <h1>Time track Reminder</h1>
+  <div class="container p-4">
+    <div class="row my-2">
 
-  <div>
-    hello
+      <div class="col-8">
+        <div class="card h-100">
+          <div class="card-header">Time Tracking Reminder</div>
+          <div class="card-body">
+            <h5 class="card-title">Hi <span id="userName">friend</span></h5>
+            <p>
+              Send a Time Track to ClickUp right now by selecting the Task were you working on for the last <strong><span id="reminderFrequency">x</span> minutes</strong> below.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-3">
+        <div class="card h-100">
+          <!-- <div class="card-header text-muted">closing automatically</div> -->
+          <div class="card-body">
+            <p>Reminder Page closing automatically in <span id="timeout">x</span> seconds.</p>
+            <button id="cancelTimeoutButton" class="btn btn-info" disabled>Cancel Timeout</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-1">
+        <a href="/options.html">Options</a>
+      </div>
+
+    </div>
+
+    <div class="row my-2">
+
+      <div class="col">
+        <div class="card text-center my-2">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-10">
+                <nav id="clickupListsNav" class="nav nav-pills">
+                  <a class="nav-link mx-1 active" data-bs-toggle="pill" data-bs-target="#allTasksTab">All Tasks</a>
+                </nav>
+              </div>
+              <div class="col">
+                <label for="taskSearchInput" class="form-label">Search Tasks</label>
+                <input id="taskSearchInput" class="form-control" name="taskSearch" placeholder="Search" autofocus/>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="tab-content" id="clickupListsTabContent">
+              <div class="tab-pane fade show active" role="tabpanel" tabindex="0" id="allTasksTab">
+                <div class="row" id="allTasksTabRow"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
-
-  <div>
-    <span id="timeout" />
-  </div>
-
 </body>
 </html>
