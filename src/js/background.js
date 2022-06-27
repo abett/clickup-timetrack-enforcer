@@ -7,6 +7,21 @@ const sleep = (ms) => {
  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+
+const onInstalledCallback = (details) => {
+  if (details.reason === 'install') {
+    // Code to be executed on first install
+    const optionsUrl = browser.runtime.getURL('options.html');
+    browser.tabs.create({
+      url: optionsUrl,
+    });
+  }
+});
+browser.runtime.onInstalled.addListener(onInstalledCallback);
+
+
+
+
 console.info("enforcing!");
 
 let timeLog = [];
@@ -42,9 +57,9 @@ const openReminder = async () => {
     console.warn(e);
   });
 
-  if (openReminderInterval && counter >= 5) {
+  /* if (openReminderInterval && counter >= 5) {
     clearInterval(openReminderInterval);
-  }
+  } */
 }
 
 
@@ -55,4 +70,4 @@ browser.storage.local.get(["reminderFrequency", "reminderActive"])
   console.info("reminding every " + reminderFrequency/(60*1000) + "min");
 
   openReminderInterval = setInterval(openReminder, reminderFrequency);
-})
+});
