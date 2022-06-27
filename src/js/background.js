@@ -16,7 +16,7 @@ const onInstalledCallback = (details) => {
       url: optionsUrl,
     });
   }
-});
+};
 browser.runtime.onInstalled.addListener(onInstalledCallback);
 
 
