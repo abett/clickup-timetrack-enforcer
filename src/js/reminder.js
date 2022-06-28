@@ -60,8 +60,8 @@ browser.storage.local.get(["clickUpTeamId", "clickUpApiKey", "user", "reminderFr
 
   clickUp.get('/task', {
     params: {
-      order_by: 'due_date',
-      reverse: true,
+      order_by: 'updated',
+      //reverse: true,
       subtasks: true,
       //space_ids: [],
       //project_ids: [],
