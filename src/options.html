@@ -8,26 +8,31 @@
 <body>
   <div class="container p-4">
 
-      <div class="card h-100">
-        <div class="card-header">ClickUp TimeTrack Enforcer</div>
-        <div class="card-body">
-          <h1>Options</h1>
+    <div class="card h-100">
+      <div class="card-header">ClickUp TimeTrack Enforcer</div>
+      <div class="card-body">
+        <h1>Options</h1>
 
-          <div>
+        <form>
 
           <div class="mb-3">
             <label for="clickUpTeamIdInput" class="form-label">ClickUp Team ID</label>
-            <input id="clickUpTeamIdInput" class="form-control" name="clickUpTeamId" placeholder="input clickup team id" disabled />
+            <input id="clickUpTeamIdInput" class="form-control" name="clickUpTeamId" placeholder="ClickUp team id" required disabled />
           </div>
 
           <div class="mb-3">
             <label for="clickUpApiKeyInput" class="form-label">ClickUp API Key</label>
-            <input id="clickUpApiKeyInput" class="form-control" name="clickUpApiKey" placeholder="input clickup API key" disabled />
+            <input id="clickUpApiKeyInput" class="form-control" name="clickUpApiKey" placeholder="ClickUp API key" required disabled />
+          </div>
+
+          <div class="mb-3">
+            <label for="defaultTaskInput" class="form-label">[optional]: default task to log time to</label>
+            <input id="defaultTaskInput" class="form-control" name="defaultTask" placeholder="Task ID or URL" />
           </div>
 
           <div class="mb-3">
             <label for="reminderFrequencyMinInput" class="form-label">Reminder Frequency (in minutes)</label>
-            <input id="reminderFrequencyMinInput" class="form-control" name="reminderFrequencyMin" />
+            <input id="reminderFrequencyMinInput" class="form-control" name="reminderFrequencyMin" required />
           </div>
 
           <div>
@@ -37,11 +42,12 @@
           <div>
             <p id="message"></p>
           </div>
-        </div>
+
+        </form>
 
       </div>
     </div>
-    
+
   </div>
 </body>
 </html>

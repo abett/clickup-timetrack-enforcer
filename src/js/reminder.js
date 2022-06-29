@@ -42,8 +42,8 @@ const handleCountDownStop = (event) => {
 }
 
 
-browser.storage.local.get(["clickUpTeamId", "clickUpApiKey", "user", "reminderFrequency"])
-.then(({ clickUpTeamId, clickUpApiKey, user, reminderFrequency }) => {
+browser.storage.local.get(["clickUpTeamId", "clickUpApiKey", "user", "reminderFrequency", "defaultTaskId"])
+.then(({ clickUpTeamId, clickUpApiKey, user, reminderFrequency, defaultTaskId }) => {
   if (!clickUpTeamId || !clickUpApiKey || !user?.id) throw new Error("ClickUp API Details missing");
 
   const userNameEl = document.getElementById('userName'),
@@ -53,7 +53,7 @@ browser.storage.local.get(["clickUpTeamId", "clickUpApiKey", "user", "reminderFr
     allTasksTabRowEl = document.getElementById("allTasksTabRow");
 
   if (userNameEl) userNameEl.textContent = user.username;
-  if (reminderFrequencyEl) reminderFrequencyEl.textContent = reminderFrequency/(60*1000);
+  if (reminderFrequencyEl) reminderFrequencyEl.textContent = reminderFrequency;
 
   clickUp.defaults.baseURL = `https://api.clickup.com/api/v2/team/${clickUpTeamId}`
   clickUp.defaults.headers.common['Authorization'] = clickUpApiKey;
@@ -115,6 +115,7 @@ browser.storage.local.get(["clickUpTeamId", "clickUpApiKey", "user", "reminderFr
 
           const listTaskEl2 = document.createElement("div");
           listTaskEl2.classList.add("task-item", "col", "col-md-6", "col-lg-3", "p-1");
+          if (task.id === defaultTaskId) listTaskEl2.classList.add("order-first");
           listTaskEl.id = `task-${task.id}-2`;
 
           const cardContent = `<div class="card h-100 text-start" style="${task.priority?.color ? ('border-color:'+task.priority.color+';') : ''}">
@@ -126,6 +127,7 @@ browser.storage.local.get(["clickUpTeamId", "clickUpApiKey", "user", "reminderFr
             <div class="list-group list-group-flush">
               ${
                 get(tasksByParent, task.id, []).map(subtask => {
+                  if (subtask.id === defaultTaskId) listTaskEl2.classList.add("order-first");
                   return `<a class="time-log-button subtask-name list-group-item list-group-item-action list-group-item-light text-start text-truncate" data-task-id="${subtask.id}" href="#"><small>> ${subtask.name}</small></a>`
                 }).join('')
               }
@@ -180,7 +182,7 @@ document.getElementById("taskSearchInput").addEventListener("input", (event) => 
   const searchTerm = event.currentTarget.value?.trim();
 
   if (!searchTerm) {
-    Array.from(document.querySelectorAll(".task-item")).forEach(i => i.classList.remove("text-muted", "order-last"));
+    Array.from(document.querySelectorAll(".task-item")).forEach(i => i.classList.remove("text-muted", "order-first", "order-1", "order-2", "order-3", "order-4", "order-5", "order-last"));
   } else {
     Array.from(document.querySelectorAll(".task-item")).forEach(i => {
       i.classList.remove("text-muted", "order-first", "order-1", "order-2", "order-3", "order-4", "order-5", "order-last");

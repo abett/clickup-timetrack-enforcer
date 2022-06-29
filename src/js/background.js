@@ -24,11 +24,9 @@ browser.runtime.onInstalled.addListener(onInstalledCallback);
 
 console.info("enforcing!");
 
-let timeLog = [];
-let reminderTabId;
-
-let counter = 1,
-  openReminderInterval;
+const defaultReminderFrequency = 10;
+let reminderTabId,
+  counter = 1;
 
 const openReminder = async () => {
 
@@ -57,17 +55,24 @@ const openReminder = async () => {
     console.warn(e);
   });
 
-  /* if (openReminderInterval && counter >= 5) {
-    clearInterval(openReminderInterval);
-  } */
 }
 
 
+browser.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === 'reminder-alarm') {
+    console.info("reminder alarm fired");
+    openReminder();
+  }
+});
+
 browser.storage.local.get(["reminderFrequency", "reminderActive"])
-.then(({ reminderFrequency = 10*60*1000, reminderActive = true }) => {
+.then(({ reminderFrequency = defaultReminderFrequency, reminderActive = true }) => {
   if (reminderActive === false) return;
 
-  console.info("reminding every " + reminderFrequency/(60*1000) + "min");
+  console.info("reminding every " + reminderFrequency + "min");
+  browser.alarms.create("reminder-alarm", {
+    delayInMinutes: reminderFrequency,
+    periodInMinutes: reminderFrequency
+  });
 
-  openReminderInterval = setInterval(openReminder, reminderFrequency);
 });
