@@ -29,7 +29,6 @@ let reminderTabId,
   counter = 1;
 
 const openReminder = async () => {
-
   const { reminderActive, clickUpTeamId, clickUpApiKey, user } = await browser.storage.local.get(["reminderActive", "clickUpTeamId", "clickUpApiKey", "user"]);
   if (reminderActive === false) return;
   if (!clickUpTeamId || !clickUpApiKey || !user?.id) {
@@ -54,9 +53,7 @@ const openReminder = async () => {
   .catch(e => {
     console.warn(e);
   });
-
-}
-
+};
 
 browser.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === 'reminder-alarm') {
@@ -64,6 +61,36 @@ browser.alarms.onAlarm.addListener((alarm) => {
     openReminder();
   }
 });
+
+
+const closeReminder = ({ tabId = reminderTabId }) => {
+  if (tabId) {
+    browser.tabs.remove(tabId);
+  } else {
+    return browser.tabs.query({ url: 'reminderPageURL' })
+    .then(tabs => {
+      tabs.forEach(tab => {
+        browser.tabs.remove(tab.id);
+      })
+    })
+  }
+};
+
+browser.runtime.onMessage.addListener(
+  (data, sender) => {
+    if (data.type === 'close_me') {
+      // console.info("closing reminder");
+      closeReminder({ tabId: sender.tab?.id });
+      return Promise.resolve('done');
+    }
+    return false;
+  }
+);
+
+
+
+
+
 
 browser.storage.local.get(["reminderFrequency", "reminderActive"])
 .then(({ reminderFrequency = defaultReminderFrequency, reminderActive = true }) => {

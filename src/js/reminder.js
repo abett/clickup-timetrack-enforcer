@@ -20,7 +20,10 @@ const timeoutEl = document.getElementById("timeout"),
   cancelTimeoutButtonEl = document.getElementById('cancelTimeoutButton');
 
 const countdown = () => {
-  if (timeout === 0) window.close();
+  if (timeout === 0) {
+    browser.runtime.sendMessage( null, { type: 'close_me' } );
+    // window.close();
+  }
   timeoutEl.textContent = timeout;
   timeout--;
 }
@@ -42,8 +45,8 @@ const handleCountDownStop = (event) => {
 }
 
 
-browser.storage.local.get(["clickUpTeamId", "clickUpApiKey", "user", "reminderFrequency", "defaultTaskId"])
-.then(({ clickUpTeamId, clickUpApiKey, user, reminderFrequency, defaultTaskId }) => {
+browser.storage.local.get(["clickUpTeamId", "clickUpApiKey", "user", "reminderFrequency", "defaultTaskId", "lastLoggedTaskId"])
+.then(({ clickUpTeamId, clickUpApiKey, user, reminderFrequency, defaultTaskId, lastLoggedTaskId }) => {
   if (!clickUpTeamId || !clickUpApiKey || !user?.id) throw new Error("ClickUp API Details missing");
 
   const userNameEl = document.getElementById('userName'),
@@ -115,7 +118,7 @@ browser.storage.local.get(["clickUpTeamId", "clickUpApiKey", "user", "reminderFr
 
           const listTaskEl2 = document.createElement("div");
           listTaskEl2.classList.add("task-item", "col", "col-md-6", "col-lg-3", "p-1");
-          if (task.id === defaultTaskId) listTaskEl2.classList.add("order-first");
+          if ((defaultTaskId && task.id === defaultTaskId) || (lastLoggedTaskId && task.id === lastLoggedTaskId)) listTaskEl2.classList.add("order-first");
           listTaskEl.id = `task-${task.id}-2`;
 
           const cardContent = `<div class="card h-100 text-start" style="${task.priority?.color ? ('border-color:'+task.priority.color+';') : ''}">
@@ -127,7 +130,7 @@ browser.storage.local.get(["clickUpTeamId", "clickUpApiKey", "user", "reminderFr
             <div class="list-group list-group-flush">
               ${
                 get(tasksByParent, task.id, []).map(subtask => {
-                  if (subtask.id === defaultTaskId) listTaskEl2.classList.add("order-first");
+                  if ((defaultTaskId && subtask.id === defaultTaskId) || (lastLoggedTaskId && subtask.id === lastLoggedTaskId)) listTaskEl2.classList.add("order-first");
                   return `<a class="time-log-button subtask-name list-group-item list-group-item-action list-group-item-light text-start text-truncate" data-task-id="${subtask.id}" href="#"><small>> ${subtask.name}</small></a>`
                 }).join('')
               }
@@ -159,9 +162,12 @@ browser.storage.local.get(["clickUpTeamId", "clickUpApiKey", "user", "reminderFr
           start: (new Date()).valueOf() - reminderFrequency,
           duration: reminderFrequency,
         })
-        .then(res => {
-          console.log(res);
+        .then(() => {
+          return browser.storage.local.set({ lastLoggedTaskId: taskId });
+        })
+        .then(() => {
           buttonEl.closest('.list-group').innerHTML = `<div class="list-group-item list-group-item-success text-start"><strong>SUCCESS</strong></div>`;
+          return true;
         })
         .catch(error => {
           console.warn(error);
