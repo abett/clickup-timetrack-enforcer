@@ -41,8 +41,7 @@ const openReminder = async () => {
     return browser.tabs.create({
       url: reminderPageURL,
     })
-  })
-
+  });
   reminderTabId = reminderTab.id;
   counter++;
 
@@ -72,7 +71,7 @@ const closeReminder = ({ tabId = reminderTabId }) => {
       tabs.forEach(tab => {
         browser.tabs.remove(tab.id);
       })
-    })
+    });
   }
 };
 

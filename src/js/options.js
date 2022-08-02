@@ -102,7 +102,7 @@ browser.storage.local.get(["clickUpTeamId", "clickUpApiKey", "defaultTaskId", "r
     if (clickUpTeamId) teamIdInputEl.value = clickUpTeamId;
     if (clickUpApiKey) apiKeyInputEl.value = clickUpApiKey;
     if (defaultTaskId) defaultTaskInputEl.value = defaultTaskId;
-    reminderFrequencyInputEl.value = reminderFrequency / (60*1000);
+    reminderFrequencyInputEl.value = reminderFrequency;
 
     teamIdInputEl.disabled = false;
     apiKeyInputEl.disabled = false;

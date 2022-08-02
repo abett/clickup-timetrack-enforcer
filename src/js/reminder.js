@@ -159,8 +159,8 @@ browser.storage.local.get(["clickUpTeamId", "clickUpApiKey", "user", "reminderFr
         clickUp.post('/time_entries', {
           tid: taskId,
           description: "auto-logged",
-          start: (new Date()).valueOf() - reminderFrequency,
-          duration: reminderFrequency,
+          start: (new Date()).valueOf() - (reminderFrequency * (60*1000)),
+          duration: reminderFrequency * (60*1000),
         })
         .then(() => {
           return browser.storage.local.set({ lastLoggedTaskId: taskId });
@@ -170,7 +170,7 @@ browser.storage.local.get(["clickUpTeamId", "clickUpApiKey", "user", "reminderFr
           return true;
         })
         .catch(error => {
-          console.warn(error);
+          console.info("ERROR: " + error.message);
         })
 
       }, { once: true })
